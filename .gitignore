@@ -1,0 +1,16 @@
+# Python artifacts
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+.pytest_cache
+.venv
+
+# Sphinx build outputs (Never upload the build folder!)
+docs/build/
+
+# IDE files
+.vscode/
+.idea/
+
+# temporary folder
+docs/build/

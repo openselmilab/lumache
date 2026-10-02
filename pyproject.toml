@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lumache"
+version = "0.1.0"
+description = "A python package to test Sphinx"
+dependencies = [
+    "numpy",
+]
