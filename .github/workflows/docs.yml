@@ -1,56 +1,78 @@
-name: Deploy Sphinx Docs to GitHub Pages
+name: CI - Test and Deploy Docs
 
 on:
   push:
-    branches: [ main ] # Si attiva a ogni push sul ramo principale
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-# Imposta i permessi minimi necessari per pubblicare su GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Evita che build multiple si sovrappongano
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
+  # JOB 1: Esegue i test su più versioni di Python
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest numpy  # Aggiungi qui altre dipendenze se necessarie
+        pip install -e .          # Installa il tuo pacchetto usando il pyproject.toml
+
+    - name: Run tests with pytest
+      run: |
+        pytest
+
+  # JOB 2: Compila e pubblica la documentazione (solo se i test passano)
   deploy-docs:
+    needs: run-tests # <--- Dice a GitHub di aspettare che i test siano VERDI
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-    # 1. Scarica il codice del repository
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. Configura Python
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
 
-    # 3. Installa le dipendenze, Sphinx e il tuo pacchetto
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install sphinx sphinx-rtd-theme numpy
         pip install -e .
 
-    # 4. Compila la documentazione puntando alla cartella corretta
     - name: Build Sphinx Documentation
       run: |
         sphinx-build -b html docs/source docs/build/html
 
-    # 5. Carica SOLO i file HTML generati (e non l'intero progetto)
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'docs/build/html/' # Lo slash finale assicura che vengano presi solo i file interni
+        path: 'docs/build/html/'
 
-    # 6. Pubblica il sito web online
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
