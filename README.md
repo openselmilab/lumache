@@ -1,8 +1,5 @@
 Lumache
 =======
-.. image:: https://github.com/openselmilab/lumache/actions/workflows/docs.yml/badge.svg
-   :target: https://github.com
-   :alt: Status dei Test e della Documentazione
 
 ![Badge](https://github.com/openselmilab/lumache/actions/workflows/docs.yml/badge.svg)
 
