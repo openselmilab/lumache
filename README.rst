@@ -5,5 +5,5 @@ Lumache
    :alt: Status dei Test e della Documentazione
 
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers that
-creates recipes mixing random ingredients.
+**Lumache** (/lu'make/) is a Python library for cooks and food lovers that creates recipes mixing random ingredients.
+** Website: [Lumache](https://openselmilab.github.io/lumache/)
